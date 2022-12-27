@@ -1,0 +1,73 @@
+<%-- 
+    Document   : information
+    Created on : Nov 23, 2022, 8:31:46 PM
+    Author     : USER
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import ="java.sql.DriverManager" %>
+<%@page import ="java.sql.ResultSet" %>
+<%@page import ="java.sql.Statement" %>
+<%@page import ="java.sql.Connection" %>
+
+<%  
+String driver = "com.mysql.jdbc.Driver";
+String connectionUrl = "jdbc:mysql://localhost:3306/";
+String database = "perantisiswa";
+String userid = "root";
+String password = "";
+String ic = request.getParameter("ic");
+try{
+    Class.forName(driver);
+}
+catch(ClassNotFoundException e){
+    e.printStackTrace();
+    out.println(e);
+}
+Connection connection = null;
+Statement statement = null;
+ResultSet resultSet = null;
+%>
+
+<html>
+    <body>
+        <h1>Peranti Siswa Application System</h1>
+        <table border ="1">
+            <tr>
+                <td>Name</td>
+                <td>Identification No.</td>
+                <td>Registration No.</td>
+                <td>Address</td>
+                <td>Education Institution</td>
+                <td>Parent Information</td>
+                <td>Status</td>
+            </tr>
+            
+            <%
+            try{
+                connection = DriverManager.getConnection(connectionUrl+database, userid, password);
+                statement = connection.createStatement();
+                String sql = "select * from applications where ic="+ic;
+                resultSet = statement.executeQuery(sql);
+                while(resultSet.next()){
+                  %>  
+                  <tr>
+                      <td><%=resultSet.getString("name")%></td>
+                      <td><%=resultSet.getString("ic")%></td>
+                      <td><%=resultSet.getString("regno")%></td>
+                      <td><%=resultSet.getString("address")%></td>
+                      <td><%=resultSet.getString("institution")%></td>
+                      <td><%=resultSet.getString("parentInfo")%></td>
+                      <td><%=resultSet.getString("status")%></td>
+                  </tr>
+                  <%
+                }
+                connection.close();
+}   catch(Exception e){
+e.printStackTrace();
+}
+    %>
+        </table>
+    </body>
+</html>
+
